@@ -1,0 +1,125 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  name  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  eventTypes EventType[]
+  availabilities Availability[]
+  availabilityExceptions AvailabilityException[]
+  slots slot[]
+  bookings Booking[]
+  @@map("users")
+}
+
+model EventType {
+  id Int @id @default(autoincrement())
+  title String
+  description String?
+  slug String? @unique
+  hostId Int 
+  isActive Boolean @default(true)
+  durationMinutes Int
+  locationType String @default("online")
+  locationValue String?
+  bufferTimeBeforeMinutes Int @default(0)
+  bufferTimeAfterMinutes Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  host User @relation(fields: [hostId], references: [id])
+  slots slot[]
+  bookings Booking[]
+  @@map("event_types")
+}
+
+
+model Availability {
+  id Int @id @default(autoincrement())
+  userId Int
+  dayOfWeek Int
+  startTime String
+  endTime String
+  isActive Boolean @default(true)
+  timezone String @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, dayOfWeek])
+  @@map("availabilities")
+
+}
+
+model AvailabilityException {
+  id Int @id @default(autoincrement())
+  userId Int
+  date DateTime @db.Date
+  type String
+  startTime String?
+  endTime String?
+  reason String?
+  timezone String @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, date])
+  @@map("availability_exceptions")
+}
+
+model slot {
+  id Int @id @default(autoincrement())
+  hostId Int
+  eventTypeId Int
+  startTime DateTime
+  endTime DateTime
+  status String @default("AVAILABLE")
+  isBooked Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  host User @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  eventType EventType @relation(fields: [eventTypeId], references: [id])
+  bookings Booking[]
+
+  @@unique([eventTypeId, startTime, endTime])
+  @@index([hostId, startTime])
+  @@index([eventTypeId, startTime, status])
+  @@map("slots")
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+  hostId Int
+  eventTypeId Int
+  slotId Int
+  attendeeName String
+  attendeeEmail String
+  attendeeNotes String?
+  status String @default("PENDING")
+  meetingLink String?
+  calendarEventId String?
+  cancelledAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  slot slot @relation(fields: [slotId], references: [id])
+  host User @relation(fields: [hostId], references: [id])
+  eventType EventType @relation(fields: [eventTypeId], references: [id])
+
+  @@index([attendeeEmail])
+  @@index([hostId,createdAt])
+  @@map("bookings")
+}
