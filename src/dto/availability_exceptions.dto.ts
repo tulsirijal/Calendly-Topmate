@@ -11,24 +11,19 @@ export const createAvailabilityExceptionSchema = z.object({
     endTime: z.string().regex(timeRegex, {message: "End time must be in HH:mm format"}).optional(),
     reason: z.string().max(255, {message: "Reason must be at most 255 characters"}).optional(),
     timezone: z.string().default("UTC")
-}).refine((data)=>{
-    if (!data.startTime || !data.endTime) {
-        return true;
+}).superRefine((data,context)=>{
+    if(data.type !== "BLOCK_PARTIAL_DAY") {
+        if(!data.startTime){
+            context.addIssue({path:["startTime"], code:"custom", message:"Start time should be specified."})
+        }
+        if(!data.endTime){
+            context.addIssue({path:["endTime"], code:"custom", message:"End time should be specified."})
+        }
+        if(data.startTime && data.endTime  && data.startTime >= data.endTime){
+            context.addIssue({path:["endTime"], code:"custom", message:"End time should be greater than start time. "})
+        }
     }
-    const [startHour, startMinute] = data.startTime?.split(":").map(Number)
-    const [endHour, endMinute] = data.endTime?.split(":").map(Number)
-
-    const startTotalMinutes = startHour * 60 + startMinute
-    const endTotalMinutes = endHour * 60 + endMinute
-
-    return startTotalMinutes < endTotalMinutes;
-
-},
- {
-    "path":["startTime"],
-    "message": "Start time should be before the end time"
- }
-);
+})
 
 export const updateAvailabilityExceptionSchema = createAvailabilityExceptionSchema.partial();
 

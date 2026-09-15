@@ -9,7 +9,7 @@ export const createAvailabilitySchema = z.object({
     endTime: z.string().regex(timeRegex, {message: "End time must be in HH:mm format"}),
     isActive: z.boolean().default(true),
     timezone: z.string().default("UTC")
-});
+}).refine((data)=> data.startTime < data.endTime, {error:"Start time should be less than end time."});
 
 export const updateAvailabilitySchema = createAvailabilitySchema.partial();
 
