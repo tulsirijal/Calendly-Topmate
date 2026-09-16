@@ -6,12 +6,12 @@ export async function listAvailabilities(userId: number){
     return await getAvailabilityByUserId(userId);
 }
 
-export async function generateAvailabilities(data: CreateAvailabilityDTO){
+export async function generateAvailabilities(data: CreateAvailabilityDTO & {userId: number}){
     const availabilityRule = await createAvailability(data);
     return availabilityRule;
 }
 
-export async function updateAvailabilties(availabilityId:number, data:UpdateAvailabilityDTO){
+export async function updateAvailabilties(availabilityId:number, data:UpdateAvailabilityDTO & {userId:number}){
     const existingAvailabilies = await getAvailabilityById(availabilityId);
     if(!existingAvailabilies) {
         throw notFoundError('This availabilty does not exist');

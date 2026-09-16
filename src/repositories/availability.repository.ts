@@ -1,7 +1,7 @@
 import {prisma} from "../config/db.js";
 import { CreateAvailabilityDTO, UpdateAvailabilityDTO } from "../dto/availability.dto.js";
 
-export async function createAvailability(data: CreateAvailabilityDTO) {
+export async function createAvailability(data: CreateAvailabilityDTO & {userId: number}) {
   const availability = await prisma.availability.create({
     data
   });

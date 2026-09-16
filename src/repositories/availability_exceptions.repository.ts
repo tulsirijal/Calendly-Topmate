@@ -1,7 +1,7 @@
 import {prisma} from "../config/db.js";
 import { CreateAvailabilityExceptionDTO, UpdateAvailabilityExceptionDTO } from "../dto/availability_exceptions.dto.js";
 
-export async function createAvailabilityException(data: CreateAvailabilityExceptionDTO) {
+export async function createAvailabilityException(data: CreateAvailabilityExceptionDTO & {userId: number}) {
   const {date, ...rest} = data;
   const availabilityException = await prisma.availabilityException.create({
     data:{

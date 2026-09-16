@@ -10,11 +10,11 @@ export async function listExceptionsById(id: number){
     return await getAvailabilityExceptionById(id);
 }
 
-export async function createAvailabiltyExceptions(data: CreateAvailabilityExceptionDTO){
+export async function createAvailabiltyExceptions(data: CreateAvailabilityExceptionDTO & {userId: number}){
     return await createAvailabilityException(data);
 }
 
-export async function updateAvailabiltyExceptions(id: number, data: UpdateAvailabilityExceptionDTO){
+export async function updateAvailabiltyExceptions(id: number, data: UpdateAvailabilityExceptionDTO & {userId: number}){
     const existingExceptions  = await listExceptionsById(id);
     if(!existingExceptions){
         throw notFoundError("This availability exception does not exist");

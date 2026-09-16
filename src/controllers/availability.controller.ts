@@ -3,24 +3,25 @@ import { generateAvailabilities, listAvailabilities, removeAvailabilities, updat
 import { successResponse } from "../utils/api-response.js";
 
 export const getAllAvailabilities = async(req:Request,res:Response)=>{
-    const userId = req.body.userId;
+    const userId = req.userId
     const response = await listAvailabilities(Number(userId));
+    return successResponse(res,response,"Availabilities retrieved successfully", 200);
 }
 
 export const makeAvailabilities = async(req: Request, res: Response)=>{
-    const response = await generateAvailabilities(req.body);
+    const response = await generateAvailabilities({...req.body, userId:req.userId});
     return successResponse(res,response, "Availabilites created successfully", 201);
 }
 
 export const updateAvailability = async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const response = await updateAvailabilties(Number(id),req.body);
+    const response = await updateAvailabilties(Number(id),{...req.body,userId:req.userId});
     successResponse(res,response, "Availabilities updated successfully");
 }
 
 export const removeAvailability = async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const {userId} = req.body;
+    const userId = req.userId;
     const response = await removeAvailabilities(Number(id), userId);
     successResponse(res,response, "Availabilities deleted successfully");
 }
