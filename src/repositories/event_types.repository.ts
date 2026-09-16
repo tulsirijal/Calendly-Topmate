@@ -27,6 +27,15 @@ export async function findEventTypeByHostId(hostId: number) {
     return eventTypes;
 }
 
+export async function findActiveEventByHost(hostId: number){
+    return prisma.eventType.findMany({
+        where:{
+            hostId,
+            isActive:true
+        }
+    })
+}
+
 export async function createEventType(hostId: number, data: CreateEventTypeDTO){
     const eventType = await prisma.eventType.create({
         data: {
