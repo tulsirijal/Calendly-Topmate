@@ -5,7 +5,7 @@ import {
     listExceptionsByUser,
     removeExceptions,
     updateAvailabiltyExceptions
-} from "../services/availability_exceptions.repository.js"
+} from "../services/availability_exceptions.service.js"
 import { successResponse } from "../utils/api-response.js";
 
 export const getExceptionsByUser = async (req: Request, res: Response) => {
