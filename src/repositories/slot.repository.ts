@@ -34,3 +34,29 @@ export async function upsertSlots(hostId: number, eventTypeId: number, start: Da
         }
     })
 }
+
+export async function getFutureSlotsByEventTypeInRange(
+    eventTypeId: number,
+    startDate: Date,
+    endDate: Date,
+) {
+    return prisma.slot.findMany({
+        where: {
+            eventTypeId,
+            startAt: { gte: startDate, lte: endDate },
+            status: { in: ["AVAILABLE", "BLOCKED"] },
+        },
+    });
+}
+
+
+export async function blockSlots(slotId: string){
+    return prisma.slot.update({
+        where:{
+            id: slotId
+        },
+        data:{
+            status:"BLOCKED"
+        }
+    })
+}

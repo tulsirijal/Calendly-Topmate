@@ -6,7 +6,7 @@ export interface TimeWindow {
 }
 
 export interface Exception {
-    type: "BLOCK_FULL_DAY" | "BLOCK_PARTIAL_DAY" | "ADD_AVAILABLE_WINDOW"
+    type: string
     startTime: string | null
     endTime: string | null
     timezone: string
@@ -118,4 +118,18 @@ export function applyExceptionsForDate(date: DateTime, baseWindows: TimeWindow[]
     }
 
     return mergeTimeIntervals(timeWindows);
+}
+
+export function timeWindowForWeekdayLuxonCompatible(date: DateTime, weekday:number, startTime:string, endTime: string, timezone: string){
+    const localDate = date.setZone(timezone).startOf('day');
+    const luxonWeekDay = weekday=== 0 ? 7 : weekday;
+
+    const start = parseTimeOnDate(localDate,startTime,timezone);
+    const end = parseTimeOnDate(localDate,endTime, timezone)
+
+    if(!start.isValid || !end.isValid || start >= end){
+        return [];
+    };
+
+    return [{startTime: start,endTime: end}];
 }
