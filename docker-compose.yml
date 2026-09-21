@@ -1,0 +1,32 @@
+services:
+  temporal:
+    image: temporalio/auto-setup:1.25.2
+    environment:
+      DB: postgres12
+      DB_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PWD: ${POSTGRES_PASSWORD}
+      POSTGRES_SEEDS: ${POSTGRES_HOST}
+      ENABLE_ES: "false"
+      SQL_TLS: "true"
+      SQL_TLS_ENABLED: "true"
+      POSTGRES_TLS_ENABLED: "true"
+      SQL_TLS_DISABLE_HOST_VERIFICATION: "false"
+      # Temporal databases expected in Neon:
+      POSTGRES_DATABASE: temporal
+      POSTGRES_VISISBLITY_DATABASE: temporal_visibility
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/dev-sql.yml
+    ports:
+      - "7233:7233"
+    volumes:
+      - ./temporal/dynamic-config:/etc/temporal/config/dynamicconfig
+
+  temporal-ui:
+    image: temporalio/ui:2.31.2
+    depends_on:
+      - temporal
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_CORS_ORIGIN: http://localhost:8000
+    ports:
+      - "8000:8080"
