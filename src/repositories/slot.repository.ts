@@ -43,7 +43,7 @@ export async function getFutureSlotsByEventTypeInRange(
     return prisma.slot.findMany({
         where: {
             eventTypeId,
-            startAt: { gte: startDate, lte: endDate },
+            startTime: { gte: startDate, lte: endDate },
             status: { in: ["AVAILABLE", "BLOCKED"] },
         },
     });

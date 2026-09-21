@@ -1,4 +1,4 @@
-import { RegenerateSlotsInput } from "../../services/slot.service.js";
+import type { RegenerateSlotsInput } from "../../services/slot.service.js";
 import { proxyActivities } from "@temporalio/workflow";
 import type * as activities from "../activities/index.js"
 

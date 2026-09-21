@@ -36,12 +36,9 @@ export async function findActiveEventByHost(hostId: number){
     })
 }
 
-export async function createEventType(hostId: number, data: CreateEventTypeDTO){
+export async function createEventType(data: CreateEventTypeDTO & {hostId: number}){
     const eventType = await prisma.eventType.create({
-        data: {
-            ...data,
-            hostId
-        }
+        data
     });
     return eventType;
 }

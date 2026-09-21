@@ -23,8 +23,8 @@ export async function regenrateSlots(input: RegenerateSlotsInput) {
         return;
     }
 
-    const from = input.from ? DateTime.fromISO(input.from, { zone: 'utc' }).startOf('day') : DateTime.now().startOf('day');
-    const to = input.to ? DateTime.fromISO(input.to, { zone: 'utc' }).endOf('day') : from.plus({ days: 30 }).endOf('day');
+    const from = input.from ? DateTime.fromISO(input.from, { zone: 'utc' }).startOf('day') : DateTime.now().startOf('day').toUTC();
+    const to = input.to ? DateTime.fromISO(input.to, { zone: 'utc' }).endOf('day') : from.plus({ days: 30 }).endOf('day').toUTC();
 
     const [availability, exception, activeEvent, bookedSlot] = await Promise.all([
         getAvailabilityByUserId(host.id),
@@ -42,7 +42,7 @@ export async function regenrateSlots(input: RegenerateSlotsInput) {
 
     for (const eventType of activeEvent) {
         const generatedCustomeSlodId = new Set<string>();
-        for (let cursor = from; cursor <= to; cursor.plus({ day: 1 })) {
+        for (let cursor = from; cursor <= to; cursor = cursor.plus({ day: 1 })) {
             const dateKey = cursor.toISODate();
             const dayExceptions = exception.filter((ex) => DateTime.fromJSDate(ex.date, { zone: 'utc' }).toISODate() == dateKey)
             const dayExceptionWithTimeZone = dayExceptions.map((ex) => ({
@@ -59,7 +59,7 @@ export async function regenrateSlots(input: RegenerateSlotsInput) {
                 timeWindows.push(...timeWindowForWeekdayLuxonCompatible(cursor, available.dayOfWeek, available.startTime, available.endTime, available.timezone))
             }
 
-            timeWindows = applyExceptionsForDate(cursor, timeWindows, dayExceptions);
+            timeWindows = applyExceptionsForDate(cursor, timeWindows, dayExceptionWithTimeZone);
 
             const slots = splitSlots(timeWindows, eventType.durationMinutes, eventType.bufferTimeBeforeMinutes, eventType.bufferTimeAfterMinutes);
             const filteredSlots = slots.filter

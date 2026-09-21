@@ -2,6 +2,7 @@ import {createEventType, deleteEventType, getAllEventTypes, findEventTypeById, u
 import {CreateEventTypeDTO, UpdateEventTypeDTO} from "../dto/event_type.dto.js";
 import { forbiddenError, notFoundError} from "../utils/api-error.js";
 import { findUserById } from "../repositories/user.repository.js";
+import { startRegenrateSlotsWorkflows } from "../temporal/client.js";
 
 export async function findAllEventTypes() {
     const eventTypes = await getAllEventTypes();
@@ -62,7 +63,8 @@ export async function updateEventTypeById(id: number, data: UpdateEventTypeDTO) 
 }
 
 export async function createNewEventType(data: CreateEventTypeDTO & { hostId: number }) {
-    const newEventType = await createEventType(Number(data.hostId), data);
+    const newEventType =  createEventType(data);
+    await startRegenrateSlotsWorkflows({hostId: data.hostId})
     return newEventType;
 }
 

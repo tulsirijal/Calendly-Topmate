@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec 'tsx src/server.ts'",
-    "dev:worker": "nodemon --watch src --ext ts --exec 'tsc src/temporal/worker.ts",
+    "dev:worker": "nodemon --watch src --ext ts --exec 'tsx src/temporal/worker.ts'",
     "postinstall": "prisma skills sync || exit 0"
   },
   "keywords": [],

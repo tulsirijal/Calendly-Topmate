@@ -3,7 +3,8 @@ import { findAllEventTypes,findEventTypesByHostID,findEventTypeByID, updateEvent
 import { successResponse } from "../utils/api-response.js";
 
 export const createEventTypes = async (req: Request, res: Response) => {
-    const response = await createNewEventType(req.body);
+    const userId = req.userId;
+    const response = await createNewEventType({...req.body,hostId:userId});
     successResponse(res, response, "Event type created successfully", 201);
 }
 

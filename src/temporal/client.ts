@@ -1,6 +1,6 @@
 import { TEMPORAL_ENABLED, TEMPORAL_TASK_QUEUE } from "../config/env.js";
 import { getTemporalClient } from "../config/temporal.js";
-import { RegenerateSlotsInput } from "../services/slot.service.js";
+import  type { RegenerateSlotsInput } from "../services/slot.service.js";
 
 async function startWorkflow(workflowName: string, workflowId: string, args: unknown[]) {
     if (!TEMPORAL_ENABLED) {

@@ -51,7 +51,7 @@ export function splitSlots(timeWindows: TimeWindow[], durationMinutes: number, b
             const slotEnd = slotStart.plus({ minutes: durationMinutes });
 
             slots.push({ startTime: slotStart, endTime: slotEnd });
-            cursor.plus({ minutes: durationMinutes });
+            cursor = cursor.plus({ minutes: durationMinutes });
         }
     }
 
