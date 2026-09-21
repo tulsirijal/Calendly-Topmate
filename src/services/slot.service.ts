@@ -8,8 +8,8 @@ import { applyExceptionsForDate, overlapsWithBookedSlots, splitSlots, TimeWindow
 
 export interface RegenerateSlotsInput {
     hostId: number
-    from: string
-    to: string
+    from?: string
+    to?: string
 }
 
 export async function regenrateSlots(input: RegenerateSlotsInput) {
