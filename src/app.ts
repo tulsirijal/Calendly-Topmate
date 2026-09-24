@@ -5,6 +5,7 @@ import { eventTypePublicRouter } from "./ routers/event_type_public.router.js";
 import { eventTypePrivateRouter } from "./ routers/event_type_private.router.js";
 import { availabilityRouter } from "./ routers/availability.router.js";
 import { availabilityExceptionRouter } from "./ routers/availability_exception.router.js";
+import { bookingRouter } from "./ routers/booking.router.js";
 
 const app: Express = express();
 
@@ -20,6 +21,7 @@ app.use("/api/users", userRouter);
 app.use("/api/event-types", eventTypePublicRouter);
 app.use("/api/event-types/private", eventTypePrivateRouter);
 app.use("/api/availabilities", availabilityRouter);
-app.use("/api/availability-exceptions",availabilityExceptionRouter)
+app.use("/api/availability-exceptions",availabilityExceptionRouter);
+app.use("/api/bookings", bookingRouter);
 app.use(errorHandler);
 export default app;
